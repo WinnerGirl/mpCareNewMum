@@ -1,0 +1,15 @@
+{
+  "code": 1,
+  "msg": "操作成功",
+  "total": 2,
+  "data": [
+    {
+      "id": 914,
+      "url": "http://www.11h5.com/images/banner/banner1.jpg"
+    },
+    {
+      "id": 912,
+      "url": "http://www.11h5.com/images/banner/banner2.jpg"
+    }
+  ]
+}
