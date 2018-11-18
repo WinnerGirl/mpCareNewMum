@@ -1,13 +1,19 @@
 <template>
   <div class="container">
-    <div class="cicle-days">
-      42天
+    <div class="round-wrapper">
+      <img src="/static/images/round.png"/>
+      <span>10day</span>
     </div>
+    <!--<div class="cicle-days-wrapper">-->
+      <!--<div class="cicle-days">-->
+        <!--42day-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="person-modal">
       <img class="person-whole" src="/static/images/person.png" alt="整个"/>
     </div>
     <div class="person-modal person-modal-map">
-      <img class="person-head" src="/static/images/head.png" alt="头部" @click="goNewPage('head')" />
+      <img class="person-head" src="/static/images/head.png" alt="头部" />
       <img class="person-chest" src="/static/images/chest.png" alt="胸部" @click="goNewPage('chest')"/>
       <img class="person-abdomen" src="/static/images/abdomen.png" alt="腹部" @click="goNewPage('abdomen')"/>
       <img class="person-hand-left" src="/static/images/hand.png" alt="左手" @click="goNewPage('hand')"/>
@@ -106,16 +112,16 @@ export default {
 
 .person-modal{
   position: relative;
-  width: 400rpx;
-  height: 900rpx;
+  width: 200px;
+  height: 450px;
   margin: 0 auto;
-  margin-top: 80rpx;
+  margin-top: 80px;
   .person-whole {
     position: absolute;
-    top: 0rpx;
+    top: 0;
     left: 50%;
-    width: 400rpx;
-    height: 900rpx;
+    width: 200px;
+    height: 450px;
     transform: translateX(-50%);
     border: 1px dashed #999;
   }
@@ -166,7 +172,7 @@ export default {
     width: $person-hand-width;
     height: $person-hand-height;
     transform: rotateY(180deg);
-    margin-left: 100rpx;
+    margin-left: 50px;
   }
   .person-leg-left {
     position: absolute;
@@ -183,7 +189,7 @@ export default {
     width: $person-leg-width;
     height: $person-leg-height;
     transform: rotateY(180deg);
-    margin-left: 8rpx;
+    margin-left: 4px;
   }
 }
   .person-modal-map{
@@ -192,18 +198,53 @@ export default {
   }
   .tip {
     text-align: center;
-    font-size: 11px;
+    font-size: 13px;
     color: #333;
     margin-top: 13px;
   }
-  .cicle-days {
+  .round-wrapper{
     position: absolute;
-
-    width: 62px;
-    height: 62px;
+    width: 76px;
+    height: 76px;
+    top: 15px;
+    left: 15px;
+    img {
+      width: 76px;
+      height: 76px;
+    }
+    span{
+      color: #4D4D4D;
+      font-size: 12px;
+      position: absolute;
+      top: 32px;
+      left: 80px;
+      font-weight: bold;
+    }
+  }
+  .cicle-days-wrapper {
+    position: absolute;
+    width: 76px;
+    height: 76px;
+    top: 15px;
+    left: 15px;
+    border-top: 2px solid #FEE7A6;
     border-radius: 50%;
-    border: 2px solid #fff;
-    color: #fff;
-    font-size: 20px;
+    /*background: conic-gradient(#9ED110, #50B517, #179067, #476EAF, #9f49ac, #CC42A2, #FF3BA7, #FF5800, #FF8100, #FEAC00, #FFCC00, #EDE604);*/
+    /*border-radius: 50%;*/
+    /*mask: radial-gradient(transparent 110px, #000 110px);*/
+    .cicle-days {
+      width: 62px;
+      height: 62px;
+      line-height: 62px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      color: #fff;
+      font-size: 19px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 5px;
+      margin-left: 5px;
+      background: transparent;
+    }
   }
 </style>

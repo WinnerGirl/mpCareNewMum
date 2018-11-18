@@ -26,6 +26,7 @@ export default {
   background-image: -webkit-linear-gradient(top, #E9BCD6, #FEE7A6);
   box-sizing: border-box;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  color: #4d4d4d;
 }
 .flex-row{
   display: flex;
@@ -99,19 +100,15 @@ $values: (2) (4) (5) (8) (10) (15) (20) (25) (30) (40) (50);
 }
 .text-grey{
   color: #333;
-  font-size: 34rpx;
 }
 .text-strong{
   color: #fff;
-  font-size: 34rpx;
 }
 .text-normal{
   color: #f1f1f1;
-  font-size: 30rpx;
 }
 .text-light{
   color: #999;
-  font-size: 24rpx;
 }
 .text-el{
   text-overflow: ellipsis;
@@ -121,4 +118,17 @@ $values: (2) (4) (5) (8) (10) (15) (20) (25) (30) (40) (50);
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2;
 }
+
+  .bottom-button {
+    width: 100%;
+    height: 47px;
+    line-height: 47px;
+    border: 1px solid #F59FD1;
+    color: #F59FD1;
+    font-size: 15px;
+    text-align: center;
+    background: transparent;
+    border-radius: 5px;
+    font-weight: bold;
+  }
 </style>

@@ -1,6 +1,34 @@
 <template>
   <div class="container">
-    detail
+    <img class="action-img" src="https://imgsa.baidu.com/exp/w=480/sign=55050fb4af51f3dec3b2b86ca4eef0ec/241f95cad1c8a78601048d706709c93d70cf50a6.jpg"/>
+    <div class="action-detail">
+      <div class="detail-item">
+        <h4>作用</h4>
+        <span v-text="action.effect || '暂无'"></span>
+      </div>
+      <div class="detail-item">
+        <h4>步骤</h4>
+        <span v-html="action.step || '暂无'"></span>
+      </div>
+      <div class="detail-item">
+        <h4>呼吸</h4>
+        <span v-text="action.breath || '暂无'"></span>
+      </div>
+      <div class="detail-item">
+        <h4>感觉</h4>
+        <span v-text="action.feeling || '暂无'"></span>
+      </div>
+      <div class="detail-item">
+      <h4>器械</h4>
+      <span v-text="action.prop || '暂无'"></span>
+    </div><div class="detail-item">
+      <h4>常见错误</h4>
+      <span v-text="action.mistaken || '暂无'"></span>
+    </div>
+    </div>
+    <div class="action-bottom">
+      <button class="bottom-button">开始修复</button>
+    </div>
   </div>
 </template>
 
@@ -9,144 +37,39 @@
 export default {
   data () {
     return {
-      scrollTop: 0,
-      bannerList: [],
-      gameList: [],
-      recommendList: [],
-      windowHeight: '100%',
-      showContainer: 0,
-      channel: ''
-    }
-  },
-  mounted () {
-  },
-  methods: {
-    mapA () {
-      console.log('1')
-    },
-    goHeadCare () {
-      const url = '../list/main?channel=quwei'
-      wx.navigateTo({ url })
-    },
-    scroll (e) {
-      this.scrollTop = e.target.scrollTop
-      console.log(this.scrollTop)
-    },
-    goTop () {
-      this.scrollTop = 0
+      action: {
+        name: '鸟式肩部下压',
+        effect: '可减缓乳房胀痛；有利于乳腺疏通，开奶',
+        step: `1. 跪在瑜伽垫上，双手撑地，保持腰背脊椎放松<br>
+        2. 以肚脐为中心，臂部向左摆动，转头看向左臂并保持一下<br>
+        3. 还原臂部与身体一直线`,
+        breath: '保持平稳呼吸',
+        feeling: '动作保持匀速，环绕时胸部有挤压感',
+        prop: '瑜伽垫',
+        mistaken: '环绕时没有挤压胸部'
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  $person-head-width: 358rpx / 2 * 1.5;
-  $person-head-height: 356rpx / 2 * 1.5;
-
-  $person-chest-width: 319rpx / 2 * 1.5;
-  $person-chest-height: 222rpx / 2 * 1.5;
-  $person-abdomen-width: 341rpx / 2 * 1.5;
-  $person-abdomen-height: 244rpx / 2 * 1.5;
-
-  $person-pelvic-width: 312rpx / 2 * 1.5;
-  $person-pelvic-height: 161rpx / 2 * 1.5;
-
-  $person-hand-width: 85rpx * 1.5;
-  $person-hand-height: 212rpx * 1.5;
-
-  $person-leg-width: 83rpx * 1.5;
-  $person-leg-height: 249rpx * 1.5;
-
-  $distance-head-body: 4rpx;
-  $distance-body-pelvic: 5rpx;
-  $distance-pelvic-leg: 1rpx;
-  $distance-body-hand: 2rpx;
-
-  $top-chest: $person-head-height + $distance-head-body;
-  $top-abdomen: $top-chest + $person-chest-height - 18rpx;
-  $top-pelvic: $top-abdomen + $person-abdomen-height;
-  $top-leg: $top-pelvic + $distance-body-pelvic;
-  $top-hand: $top-chest;
-
-.person-modal{
-  position: relative;
-  width: 400rpx;
-  height: 900rpx;
-  margin: 0 auto;
-  margin-top: 80rpx;
-  .person-whole {
-    position: absolute;
-    top: 0rpx;
-    left: 50%;
-    width: 400rpx;
-    height: 900rpx;
-    transform: translateX(-50%);
+  .action-img {
+    width: 100%;
+    height: 200px;
   }
-  .person-head {
-    position: absolute;
-    top: 0rpx;
-    left: 50%;
-    width: $person-head-width;
-    height: $person-head-height;
-    transform: translateX(-50%);
+  .action-detail {
+    padding: 0 15px;
+    font-size: 12px;
+    .detail-item {
+      margin-top: 15px;
+      h4 {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+    }
   }
-  .person-chest {
-    position: absolute;
-    top: $top-chest;
-    left: 50%;
-    width: $person-chest-width;
-    height: $person-chest-height;
-    transform: translateX(-50%);
+  .action-bottom{
+    padding: 23px 15px 15px 15px;
   }
-  .person-abdomen {
-    position: absolute;
-    top: $top-abdomen;
-    left: 50%;
-    width: $person-abdomen-width;
-    height: $person-abdomen-height;
-    transform: translateX(-50%);
-  }
-  .person-pelvic {
-    position: absolute;
-    top: $top-pelvic;
-    left: 50%;
-    width: $person-pelvic-width;
-    height: $person-pelvic-height;
-    transform: translateX(-50%);
-  }
-  .person-hand-left {
-    position: absolute;
-    top: $top-hand;
-    left: 50%;
-    width: $person-hand-width;
-    height: $person-hand-height;
-    margin-left: -221rpx;
-  }
-  .person-hand-right {
-    position: absolute;
-    top: $top-hand;
-    left: 50%;
-    width: $person-hand-width;
-    height: $person-hand-height;
-    transform: rotateY(180deg);
-    margin-left: 100rpx;
-  }
-  .person-leg-left {
-    position: absolute;
-    top: $top-leg;
-    left: 50%;
-    width: $person-leg-width;
-    height: $person-leg-height;
-    margin-left: -128rpx;
-  }
-  .person-leg-right {
-    position: absolute;
-    top: $top-leg;
-    left: 50%;
-    width: $person-leg-width;
-    height: $person-leg-height;
-    transform: rotateY(180deg);
-    margin-left: 8rpx;
-  }
-}
 </style>

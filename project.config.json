@@ -10,7 +10,7 @@
 	"miniprogramRoot": "dist/",
 	"compileType": "miniprogram",
 	"appid": "wx051b26a66be567e3",
-	"projectname": "mp-care-new-mum",
+	"projectname": "careMother",
 	"condition": {
 		"search": {
 			"current": -1,
