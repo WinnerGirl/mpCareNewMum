@@ -12,32 +12,16 @@
         <img class="pelvic-line" src="/static/images/pelvic_line.png">
       </div>
     </div>
-    <div class="page-center">
-      <img src="/static/images/line.png">
-    </div>
-    <div class="page-right">
-      <div class="title" v-text="actionList.title">
-      </div>
-      <ul class="action-list">
-        <li class="action" v-for="(item, index) in actionList.data" :key="index">
-          <span v-text="item.name"></span>
-          <div class="clearfix">
-            <img class="pull-left" src="https://imgsa.baidu.com/exp/w=480/sign=55050fb4af51f3dec3b2b86ca4eef0ec/241f95cad1c8a78601048d706709c93d70cf50a6.jpg">
-            <div class="detail pull-left">
-              <span v-text="item.times"></span>
-              <span v-text="item.prop"></span>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <action-line :action="actionList"></action-line>
     <div class="page-bottom">
-      <button class="bottom-button">开始修复</button>
+      <button class="bottom-button" @click="goVideoPlayer">开始修复</button>
     </div>
   </div>
 </template>
 
 <script>
+  import ActionLine from '../../components/actionLine.vue'
+
   export default {
     data () {
       return {
@@ -66,6 +50,14 @@
           }]
         }
       }
+    },
+    methods: {
+      goVideoPlayer () {
+        wx.navigateTo({ url: '../video/main' })
+      }
+    },
+    components: {
+      ActionLine
     }
   }
 </script>

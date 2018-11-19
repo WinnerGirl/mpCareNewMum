@@ -27,7 +27,7 @@
     </div>
     </div>
     <div class="action-bottom">
-      <button class="bottom-button">开始修复</button>
+      <button class="bottom-button" @click="goVideoPlayer">开始修复</button>
     </div>
   </div>
 </template>
@@ -48,6 +48,16 @@ export default {
         prop: '瑜伽垫',
         mistaken: '环绕时没有挤压胸部'
       }
+    }
+  },
+  mounted () {
+    wx.setNavigationBarTitle({
+      title: this.action.name
+    })
+  },
+  methods: {
+    goVideoPlayer () {
+      wx.navigateTo({ url: '../video/main' })
     }
   }
 }

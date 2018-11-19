@@ -51,7 +51,7 @@ export default {
       wx.navigateTo({ url })
     },
     goHeadCare () {
-      const url = '../head/main'
+      const url = '../feedback/main'
       wx.navigateTo({ url })
     },
     scroll (e) {
@@ -123,7 +123,7 @@ export default {
     width: 200px;
     height: 450px;
     transform: translateX(-50%);
-    border: 1px dashed #999;
+    /*border: 1px dashed #999;*/
   }
   .person-head {
     position: absolute;

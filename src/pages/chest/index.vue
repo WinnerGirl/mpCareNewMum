@@ -11,63 +11,54 @@
         </div>
       </div>
     </div>
-    <div class="page-center">
-      <img src="/static/images/line.png">
-    </div>
-    <div class="page-right">
-      <div class="title" v-text="actionList.title">
-      </div>
-      <ul class="action-list">
-        <li class="action" v-for="(item, index) in actionList.data" :key="index">
-          <span v-text="item.name"></span>
-          <div class="clearfix">
-            <img class="pull-left" src="/static/images/action.png">
-            <div class="detail pull-left">
-              <span v-text="item.times"></span>
-              <span v-text="item.prop"></span>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <action-line :action="actionList"></action-line>
     <div class="page-bottom">
-      <button class="bottom-button">开始修复</button>
+      <button class="bottom-button" @click="goVideoPlayer">开始修复</button>
     </div>
   </div>
 </template>
 
 <script>
+  import ActionLine from '../../components/actionLine.vue'
 
-export default {
-  data () {
-    return {
-      actionList: {
-        title: '胸部修复 6个动作，90秒',
-        data: [{
-          name: '坐姿腹式呼吸',
-          times: '10″',
-          prop: '瑜伽垫'
-        }, {
-          name: '辅助腰部呼吸',
-          times: '4次',
-          prop: '瑜伽垫'
-        }, {
-          name: '猫式侧腰左扭',
-          times: '2次',
-          prop: '瑜伽垫'
-        }, {
-          name: '猫式侧腰右扭',
-          times: '2次',
-          prop: '瑜伽垫'
-        }, {
-          name: '猫式侧腰左扭',
-          times: '2次',
-          prop: '瑜伽垫'
-        }]
+  export default {
+    data () {
+      return {
+        actionList: {
+          title: '胸部修复 6个动作，90秒',
+          data: [{
+            name: '坐姿腹式呼吸',
+            times: '10″',
+            prop: '瑜伽垫'
+          }, {
+            name: '辅助腰部呼吸',
+            times: '4次',
+            prop: '瑜伽垫'
+          }, {
+            name: '猫式侧腰左扭',
+            times: '2次',
+            prop: '瑜伽垫'
+          }, {
+            name: '猫式侧腰右扭',
+            times: '2次',
+            prop: '瑜伽垫'
+          }, {
+            name: '猫式侧腰左扭',
+            times: '2次',
+            prop: '瑜伽垫'
+          }]
+        }
       }
+    },
+    methods: {
+      goVideoPlayer () {
+        wx.navigateTo({ url: '../video/main' })
+      }
+    },
+    components: {
+      ActionLine
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
