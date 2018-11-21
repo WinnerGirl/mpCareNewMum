@@ -61,6 +61,10 @@
       font-size: 15px;
       color: #333;
     }
+    .action-list {
+      height: 400px;
+      overflow-y: auto;
+    }
     .action {
       height: 72px;
       margin-top: 8px;

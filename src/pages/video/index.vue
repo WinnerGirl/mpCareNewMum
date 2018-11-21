@@ -2,7 +2,7 @@
   <div class="container">
     <ul>
       <li v-for="video in videoList" :key="video.id" @click="goNextVideo">
-        <video v-if="videoId === video.id" autoplay :src="video.url"></video>
+        <video v-if="videoId === video.id" autoplay :src="videoUrl"></video>
         <span class="text-red" v-show="video.id === videoId">播放中</span>
         <span v-text="video.title"></span>
       </li>
