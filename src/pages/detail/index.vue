@@ -25,13 +25,13 @@
       <div class="control-btn control-left" @click="goLastAction">
         <img src="/static/images/arrow.png">
       </div>
-      <div class="control-center"  @click="showDetail = true">{{actionList.data[actionIndex].name}}</div>
+      <div class="control-center"  @click="showDetailPanel">{{actionList.data[actionIndex].name}}</div>
       <div class="control-btn control-right" @click="goNextAction">
         <img src="/static/images/arrow.png">
       </div>
     </div>
-    <div class="action-detail" v-show="showDetail">
-      <div class="action-icon" @click="showDetail = false">
+    <div class="action-detail" v-show="showDetail" :style="{top: top}">
+      <div class="action-icon" @click="hideDetailPanel">
         <img src="/static/images/arrow-bottom.png">
       </div>
       <div class="detail-item">
@@ -68,7 +68,8 @@
         actionId: 0,
         showVideo: true,
         actionIndex: 0,
-        showDetail: false,
+        showDetail: true,
+        top: '100%',
         actionList: {
           title: '胸部修复',
           data: [{
@@ -153,6 +154,14 @@
       goCertainAction (action, index) {
         this.actionIndex = index
         this.actionId = action.id
+      },
+      showDetailPanel () {
+        // this.showDetail = true
+        this.top = '200px'
+      },
+      hideDetailPanel () {
+        // this.showDetail = true
+        this.top = '100%'
       }
     }
   }
@@ -219,16 +228,16 @@
   }
   .action-detail {
     position: fixed;
-    top: 200px;
+    top: 100%;
     padding: 0 15px;
     font-size: 12px;
     background: rgba(0,0,0,.9);
     width: 100%;
     height: calc(100% - 200px);
+    /*height: 0;*/
     color: #fff;
     box-sizing: border-box;
-    -webkit-transition: all .5s cubic-bezier(0, 1, 0.5, 1);
-    transition: all .5s cubic-bezier(0, 1, 0.5, 1);
+    transition: top 0.5s;
     .action-icon{
       position: absolute;
       top: 15px;

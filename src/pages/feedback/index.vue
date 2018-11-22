@@ -13,6 +13,27 @@
         <img src="/static/images/smile.png"/>
       </div>
     </div>
+    <div class="center-panel">
+      <div class="center-panel-wrapper">
+        <div class="flex-row">
+          <div class="flex-1 text-center title">完成</div>
+          <div class="flex-1 text-center title">时长</div>
+        </div>
+        <div class="flex-row pt30">
+          <div class="flex-1 text-center content">5动作</div>
+          <div class="flex-1 text-center content">10分钟</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-panel">
+      <p>现在的感受</p>
+      <div class="flex-row">
+        <div class="flex-1" v-for="item in feelings">
+          <img src="/static/images/circle.png">
+          <span v-text="item"></span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,7 +48,8 @@ export default {
       recommendList: [],
       windowHeight: '100%',
       showContainer: 0,
-      channel: ''
+      channel: '',
+      feelings: ['感觉很棒', '感觉一般', '没感觉']
     }
   },
   mounted () {
@@ -59,7 +81,7 @@ export default {
   }
   .header {
     width: 100%;
-    height: 250px;
+    height: 200px;
     background-image: -webkit-linear-gradient(top, #eabdd5, #f2cec2);
     .header-left {
       .text {
@@ -83,6 +105,26 @@ export default {
       img{
         width: 81px;
         height: 82px;
+      }
+    }
+  }
+  .center-panel {
+    width: 100%;
+    height: 90px;
+    padding: 0 25px;
+    box-sizing: border-box;
+    margin-top: -10px;
+    .center-panel-wrapper {
+      width: 100%;
+      height: 90px;
+      background: #f2cec2;
+      color: #fff;
+      padding-top: 26px;
+      .title {
+        font-size: 12px;
+      }
+      .content {
+        font-size: 15px;
       }
     }
   }
