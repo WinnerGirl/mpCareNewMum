@@ -30,8 +30,9 @@ export default {
   overflow: auto;
   background-image: -webkit-linear-gradient(top, #E9BCD6, #FEE7A6);
   box-sizing: border-box;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'PingFang-SC-Regular', 'Avenir', Helvetica, Arial, sans-serif;
   color: #4d4d4d;
+  overflow: hidden;
 }
 .flex-row{
   display: flex;

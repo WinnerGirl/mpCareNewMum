@@ -27,10 +27,10 @@
     </div>
     <div class="bottom-panel">
       <p>现在的感受</p>
-      <div class="flex-row">
-        <div class="flex-1" v-for="item in feelings">
+      <div class="flex-row circle-row">
+        <div class="flex-1 circle-row" v-for="item in feelings">
           <img src="/static/images/circle.png">
-          <span v-text="item"></span>
+          <span class="circle-text" v-text="item"></span>
         </div>
       </div>
     </div>
@@ -110,21 +110,46 @@ export default {
   }
   .center-panel {
     width: 100%;
-    height: 90px;
+    height: 70px;
     padding: 0 25px;
     box-sizing: border-box;
     margin-top: -10px;
     .center-panel-wrapper {
       width: 100%;
-      height: 90px;
+      height: 70px;
       background: #f2cec2;
       color: #fff;
       padding-top: 26px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
       .title {
         font-size: 12px;
       }
       .content {
         font-size: 15px;
+      }
+    }
+  }
+  .bottom-panel {
+    color: #eabdd5;
+    font-size: 12px;
+    padding-top: 100px;
+    text-align: center;
+    font-weight: bold;
+    .circle-row {
+      margin-top: 25px;
+      position: relative;
+      .circle-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-top: -3px;
+        font-weight: normal;
+      }
+      img {
+        width: 66px;
+        height: 66px;
       }
     }
   }
