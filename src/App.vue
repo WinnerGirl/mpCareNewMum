@@ -1,15 +1,23 @@
 <script>
+import { login } from './services/imumServices'
 export default {
   created () {
-    // wx.login({
-    //   success: () => {
-    //     wx.getUserInfo({
-    //       success: (res) => {
-    //         wx.setStorageSync('user', res.userInfo)
-    //       }
-    //     })
-    //   }
-    // })
+    wx.login({
+      success: (res) => {
+        if (res.code) {
+          this.userLogin(res.code)
+        }
+      }
+    })
+  },
+  methods: {
+    userLogin (code) {
+      login({code}).then(res => {
+        if (res.code === 1) {
+          wx.setStorageSync('sessionId', res.data.sessionid)
+        }
+      })
+    }
   }
 }
 </script>

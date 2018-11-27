@@ -69,11 +69,16 @@ export default {
       days: [],
       dayIndex: 70,
       typeIndex: 0,
-      rateType: 1
+      rateType: 1,
+      sessionId: ''
     }
   },
   mounted () {
-    this.showModal = true
+    this.sessionId = wx.getStorageSync('sessionId')
+    this.showModal = wx.getStorageSync('sessionId')
+    if (this.sessionId) {
+
+    }
     this.initDays()
   },
   methods: {
