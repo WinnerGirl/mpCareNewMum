@@ -1,22 +1,22 @@
 <template>
   <div class="container">
     <div class="video-wrapper" v-show="showVideo">
-      <video autoplay v-for="video in actionList.data" :key="video.id" v-if="actionId === video.id" :src="video.url"></video>
+      <video autoplay v-for="(video, index) in actionList" :key="index" v-if="actionId === video.id" :src="video.vlink" @ended="goNextAction"></video>
     </div>
     <ul class="action-list">
-      <li class="action-item" v-for="(action, index) in actionList.data" :key="action.id" @click="goCertainAction(action, index)">
+      <li class="action-item" v-for="(item, index) in actionList" :key="index" @click="goCertainAction(item, index)">
         <div class="flex-row">
           <div class="flex-3 clearfix">
             <div class="pull-left">
-              <img :src="action.cover">
+              <img :src="item.imglink">
             </div>
             <div class="pull-left pl15">
-              <span class="action-text text-bold" v-text="action.name"></span>
-              <span class="action-text mt30"> {{action.time}}{{action.prop}}</span>
+              <span class="action-text text-bold" v-text="item.name"></span>
+              <span class="action-text mt30"> {{item.times}}″ {{item.equipment}}</span>
             </div>
           </div>
           <div class="flex-1">
-            <span v-show="actionId === action.id" class="action-color">开始修复</span>
+            <span v-show="actionId === item.id" class="action-color">修复中...</span>
           </div>
         </div>
       </li>
@@ -25,130 +25,145 @@
       <div class="control-btn control-left" @click="goLastAction">
         <img src="/static/images/arrow.png">
       </div>
-      <div class="control-center"  @click="showDetailPanel">{{actionList.data[actionIndex].name}}</div>
+      <div class="control-center"  @click="showDetailPanel">{{actionName}}</div>
       <div class="control-btn control-right" @click="goNextAction">
         <img src="/static/images/arrow.png">
       </div>
     </div>
-    <div class="action-detail" v-show="showDetail" :style="{top: top}">
+    <div class="action-detail" :style="{top: positionTop}">
       <div class="action-icon" @click="hideDetailPanel">
         <img src="/static/images/arrow-bottom.png">
       </div>
       <div class="detail-item">
         <h4>作用</h4>
-        <span v-text="action.effect || '暂无'"></span>
+        <span v-text="actionInfo.effect || '暂无'"></span>
       </div>
       <div class="detail-item">
         <h4>步骤</h4>
-        <span v-html="action.step || '暂无'"></span>
+        <span v-html="actionInfo.step || '暂无'"></span>
       </div>
       <div class="detail-item">
         <h4>呼吸</h4>
-        <span v-text="action.breath || '暂无'"></span>
+        <span v-text="actionInfo.breath || '暂无'"></span>
       </div>
       <div class="detail-item">
         <h4>感觉</h4>
-        <span v-text="action.feeling || '暂无'"></span>
+        <span v-text="actionInfo.feel || '暂无'"></span>
       </div>
       <div class="detail-item">
         <h4>器械</h4>
-        <span v-text="action.prop || '暂无'"></span>
+        <span v-text="actionInfo.equipment || '暂无'"></span>
       </div><div class="detail-item">
       <h4>常见错误</h4>
-      <span v-text="action.mistaken || '暂无'"></span>
+      <span v-text="actionInfo.wrong || '暂无'"></span>
     </div>
     </div>
   </div>
 </template>
 
 <script>
+  import { getAction, getTheme, postStartClass, postEndClass } from '../../services/imumServices'
+  import {shareConfig} from '../../utils/commonConfig'
+
   export default {
     data () {
       return {
-        actionId: 0,
-        showVideo: true,
+        actionId: '',
+        themeId: '',
+        sessionid: '',
+        showVideo: false,
         actionIndex: 0,
         showDetail: true,
-        top: '100%',
-        actionList: {
-          title: '胸部修复',
-          data: [{
-            id: 0,
-            name: '坐姿腹式呼吸',
-            times: '10″',
-            prop: '瑜伽垫',
-            url: 'https://cns.ef-cdn.com/_vids/dailylesson/lesson/457/default.mp4',
-            title: 'Why am I not allowed to attend meetings?',
-            cover: 'https://cns.ef-cdn.com/_imgs/community/dailylesson/lessons/lesson457.jpg'
-          }, {
-            id: 1,
-            name: '辅助腰部呼吸',
-            times: '4次',
-            prop: '瑜伽垫',
-            url: 'https://cns.ef-cdn.com/_vids/dailylesson/lesson/458/default.mp4',
-            title: 'Bend the knees',
-            cover: 'https://cns.ef-cdn.com/_imgs/community/dailylesson/lessons/lesson458.jpg'
-          }, {
-            id: 2,
-            name: '猫式侧腰左扭',
-            times: '2次',
-            prop: '瑜伽垫',
-            url: 'https://cns.ef-cdn.com/_vids/dailylesson/lesson/459/default.mp4',
-            title: 'Never strike from behind.',
-            cover: 'https://cns.ef-cdn.com/_imgs/community/dailylesson/lessons/lesson459.jpg'
-          }, {
-            id: 3,
-            name: '猫式侧腰右扭',
-            times: '2次',
-            prop: '瑜伽垫',
-            url: 'https://cns.ef-cdn.com/_vids/dailylesson/lesson/460/default.mp4',
-            title: 'Keep your eye on the target.',
-            cover: 'https://cns.ef-cdn.com/_imgs/community/dailylesson/lessons/lesson460.jpg'
-          }, {
-            id: 4,
-            name: '猫式侧腰左扭',
-            times: '2次',
-            prop: '瑜伽垫',
-            url: 'https://cns.ef-cdn.com/_vids/dailylesson/lesson/458/default.mp4',
-            title: ' So far so good.',
-            cover: 'https://cns.ef-cdn.com/_imgs/community/dailylesson/lessons/lesson461.jpg'
-          }]
-        },
-        action: {
-          name: '鸟式肩部下压',
-          effect: '可减缓乳房胀痛；有利于乳腺疏通，开奶',
-          step: `1. 跪在瑜伽垫上，双手撑地，保持腰背脊椎放松<br>
-        2. 以肚脐为中心，臂部向左摆动，转头看向左臂并保持一下<br>
-        3. 还原臂部与身体一直线`,
-          breath: '保持平稳呼吸',
-          feeling: '动作保持匀速，环绕时胸部有挤压感',
-          prop: '瑜伽垫',
-          mistaken: '环绕时没有挤压胸部'
-        }
+        positionTop: '100%',
+        title: '',
+        actionList: [],
+        actionInfo: {},
+        actionName: '',
+        startTime: '',
+        recordid: '',
+        count: ''
       }
     },
     mounted () {
-      wx.setNavigationBarTitle({
-        title: this.actionList.title
-      })
+      this.sessionid = wx.getStorageSync('sessionid')
+      this.startTime = Date.parse(new Date())
+      this.startRepair()
+      this.getActionList()
+      this.getActionInfo()
     },
     methods: {
+      async startRepair () {
+        const courseInfo = JSON.parse(wx.getStorageSync('course'))
+        const data = await postStartClass({
+          sessionid: this.sessionid,
+          courseid: courseInfo.id,
+          themeid: this.themeId,
+          times: this.startTime
+        })
+        if (data.code === 0) {
+          this.recordid = data.data.recordid
+        }
+      },
+      async finishRepair () {
+        const data = await postEndClass({
+          sessionid: this.sessionid,
+          recordid: this.recordid
+        })
+        if (data.code === 0) {
+          const endTime = Date.parse(new Date())
+          wx.navigateTo({ url: `../feedback/main?recordId=${this.recordid}&count=${this.count}&times=${endTime - this.startTime}` })
+        }
+      },
+      async getActionList () {
+        const data = await getTheme({
+          sessionid: this.sessionid,
+          themeid: this.themeId
+        })
+        if (data.code === 0) {
+          const actionList = data.data.actions
+          this.count = data.data.count
+          this.actionList = actionList
+          if (this.actionId !== '') {
+            this.actionIndex = actionList.findIndex(action => Number(action.id) === Number(this.actionId))
+            this.actionName = actionList[this.actionIndex].name
+          } else {
+            this.actionId = actionList[0].id
+            this.actionName = actionList[0].name
+          }
+          this.showVideo = true
+          wx.setNavigationBarTitle({
+            title: data.data.cycle
+          })
+        }
+      },
+      async getActionInfo () {
+        const data = await getAction({
+          sessionid: wx.getStorageSync('sessionid'),
+          actionid: this.actionId
+        })
+        if (data.code === 0) {
+          const action = data.data
+          action.step = action.step.replace(/\n/g, '<br>')
+          this.actionInfo = action
+        }
+      },
       goFeedback () {
-        wx.navigateTo({ url: '../feedback/main' })
+        this.finishRepair()
+        wx.navigateTo({ url: `../feedback/main?time=` })
       },
       goLastAction () {
         if (this.actionIndex === 0) return
         this.actionIndex -= 1
-        this.actionId = this.actionList.data[this.actionIndex].id
+        this.actionId = this.actionList[this.actionIndex].id
       },
       goNextAction () {
-        if (this.actionIndex === this.actionList.data.length - 1) {
-          this.goFeedback()
+        if (this.actionIndex === this.actionList.length - 1) {
+          this.finishRepair()
           return
         }
         this.showVideo = false
         this.actionIndex += 1
-        this.actionId = this.actionList.data[this.actionIndex].id
+        this.actionId = this.actionList[this.actionIndex].id
         this.showVideo = true
       },
       goCertainAction (action, index) {
@@ -157,12 +172,23 @@
       },
       showDetailPanel () {
         // this.showDetail = true
-        this.top = '200px'
+        this.positionTop = '200px'
       },
       hideDetailPanel () {
         // this.showDetail = true
-        this.top = '100%'
+        this.positionTop = '100%'
       }
+    },
+    onLoad (params) {
+      if (params.actionId) {
+        this.actionId = Number(params.actionId)
+      }
+      if (params.themeId) {
+        this.themeId = Number(params.themeId)
+      }
+    },
+    onShareAppMessage () {
+      return shareConfig
     }
   }
 </script>
@@ -216,6 +242,10 @@
     img {
       width: 22px;
       height: 22px;
+    }
+    .control-center{
+      width: 100%;
+      text-align: center;
     }
     .control-btn {
       padding-top: 13px;

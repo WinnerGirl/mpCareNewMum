@@ -11,7 +11,7 @@
         <img class="hand-line" src="/static/images/hand_line.png">
       </div>
     </div>
-    <action-line :action="actionList"></action-line>
+    <action-line :id="themeId"></action-line>
     <div class="page-bottom">
       <button class="bottom-button" @click="goVideoPlayer">开始修复</button>
     </div>
@@ -20,43 +20,29 @@
 
 <script>
   import ActionLine from '../../components/actionLine.vue'
+  import {shareConfig} from '../../utils/commonConfig'
 
   export default {
     data () {
       return {
-        actionList: {
-          title: '上肢修复 6个动作，90秒',
-          data: [{
-            name: '坐姿腹式呼吸',
-            times: '10″',
-            prop: '瑜伽垫'
-          }, {
-            name: '辅助腰部呼吸',
-            times: '4次',
-            prop: '瑜伽垫'
-          }, {
-            name: '猫式侧腰左扭',
-            times: '2次',
-            prop: '瑜伽垫'
-          }, {
-            name: '猫式侧腰右扭',
-            times: '2次',
-            prop: '瑜伽垫'
-          }, {
-            name: '猫式侧腰左扭',
-            times: '2次',
-            prop: '瑜伽垫'
-          }]
-        }
+        themeId: 3
       }
     },
     methods: {
       goVideoPlayer () {
-        wx.navigateTo({ url: '../video/main' })
+        wx.navigateTo({ url: `../detail/main?themeId=${this.themeId}` })
       }
     },
     components: {
       ActionLine
+    },
+    onLoad (params) {
+      if (params) {
+        this.themeId = params.themeId
+      }
+    },
+    onShareAppMessage () {
+      return shareConfig
     }
   }
 </script>

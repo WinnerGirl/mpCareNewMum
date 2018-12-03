@@ -28,9 +28,9 @@
     <div class="bottom-panel">
       <p>现在的感受</p>
       <div class="flex-row circle-row">
-        <div class="flex-1 circle-row" v-for="item in feelings">
+        <div class="flex-1 circle-row" v-for="item in feelings" @click="submitComment(item)">
           <img src="/static/images/circle.png">
-          <span class="circle-text" v-text="item"></span>
+          <span class="circle-text" v-text="item.title"></span>
         </div>
       </div>
     </div>
@@ -38,39 +38,57 @@
 </template>
 
 <script>
+  import {shareConfig} from '../../utils/commonConfig'
+  import {postComment} from '../../services/imumServices'
 
-export default {
-  data () {
-    return {
-      scrollTop: 0,
-      bannerList: [],
-      gameList: [],
-      recommendList: [],
-      windowHeight: '100%',
-      showContainer: 0,
-      channel: '',
-      feelings: ['感觉很棒', '感觉一般', '没感觉']
-    }
-  },
-  mounted () {
-  },
-  methods: {
-    mapA () {
-      console.log('1')
+  export default {
+    data () {
+      return {
+        recordId: '',
+        count: '',
+        times: '',
+        feelings: [{
+          id: 0,
+          title: '感觉很棒'
+        }, {
+          id: 1,
+          title: '感觉一般'
+        }, {
+          id: 2,
+          title: '感觉一般'
+        }]
+      }
     },
-    goHeadCare () {
-      const url = '../list/main?channel=quwei'
-      wx.navigateTo({ url })
+    mounted () {
     },
-    scroll (e) {
-      this.scrollTop = e.target.scrollTop
-      console.log(this.scrollTop)
+    methods: {
+      async submitComment (feeling) {
+        const data = await postComment({
+          sessionid: wx.getStorageSync('sessionid'),
+          recordid: this.recordId,
+          count: this.count,
+          times: this.times,
+          result: feeling.id
+        })
+        if (data.code === 0) {
+          wx.reLaunch({
+            url: '../index/main'
+          })
+        }
+      }
     },
-    goTop () {
-      this.scrollTop = 0
+    onLoad (params) {
+      console.log(params)
+      if (params) {
+        this.recordId = Number(params.recordId)
+        this.themeId = Number(params.count)
+        this.times = params.times
+      }
+    },
+    onShareAppMessage () {
+      return shareConfig
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>

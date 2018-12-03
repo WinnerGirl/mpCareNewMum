@@ -1,4 +1,5 @@
-import {getAPIUrl} from './config'
+import {getAPIUrl} from './apiConfig'
+import {errorHandle} from './errorHandle'
 
 function fetchData () {
   function getResponse (url, params, type) {
@@ -12,8 +13,12 @@ function fetchData () {
         },
         complete: (res) => {
           if (res.statusCode >= 200 && res.statusCode < 300) {
+            if (res.data.code !== 0) {
+              errorHandle(res.data.code)
+            }
             resolve(res.data)
           } else {
+            errorHandle(4400)
             reject(res)
           }
         }

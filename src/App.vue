@@ -1,23 +1,15 @@
 <script>
-import { login } from './services/imumServices'
 export default {
   created () {
-    wx.login({
-      success: (res) => {
-        if (res.code) {
-          this.userLogin(res.code)
-        }
-      }
-    })
-  },
-  methods: {
-    userLogin (code) {
-      login({code}).then(res => {
-        if (res.code === 1) {
-          wx.setStorageSync('sessionId', res.data.sessionid)
-        }
-      })
-    }
+    // if (!wx.getStorageSync('sessionid')) { // 已经登录过的不用重新登录
+    //   wx.login({ // 调用接口获取登录凭证（code)
+    //     success: (res) => {
+    //       if (res.code) {
+    //         this.userLogin(res.code)
+    //       }
+    //     }
+    //   })
+    // }
   }
 }
 </script>
@@ -124,13 +116,10 @@ $values: (2) (4) (5) (8) (10) (15) (20) (25) (30) (40) (50);
 .text-light{
   color: #999;
 }
-.text-el{
+.text-el-1{
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
 }
 
   .bottom-button {

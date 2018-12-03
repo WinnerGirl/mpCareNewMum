@@ -9,22 +9,22 @@
       <img v-if="rateType === 2" src="/static/images/color2.png">
       <img v-if="rateType === 3" src="/static/images/color3.png">
       <div class="circle-days">
-        42day
+        {{cycle}}day
       </div>
-      <span class="day-num">{{days[dayIndex]}}天</span>
+      <span class="day-num">{{dayNum}}天</span>
     </div>
     <div class="person-modal">
       <img class="person-whole" src="/static/images/person.png" alt="整个"/>
     </div>
     <div class="person-modal person-modal-map">
       <img class="person-head" src="/static/images/head.png" alt="头部" />
-      <img class="person-chest" src="/static/images/chest.png" alt="胸部" @click="goNewPage('chest')"/>
-      <img class="person-abdomen" src="/static/images/abdomen.png" alt="腹部" @click="goNewPage('abdomen')"/>
-      <img class="person-hand-left" src="/static/images/hand.png" alt="左手" @click="goNewPage('hand')"/>
-      <img class="person-hand-right" src="/static/images/hand.png" alt="右手" @click="goNewPage('hand')"/>
-      <img class="person-pelvic" src="/static/images/pelvic.png" alt="盆腔" @click="goNewPage('pelvic')"/>
-      <img class="person-leg-left" src="/static/images/leg.png" alt="左脚" @click="goNewPage('leg')"/>
-      <img class="person-leg-right"src="/static/images/leg.png" alt="右脚" @click="goNewPage('leg')"/>
+      <img class="person-chest" src="/static/images/chest.png" alt="胸部" @click="goNewPage('chest', 0)"/>
+      <img class="person-abdomen" src="/static/images/abdomen.png" alt="腹部" @click="goNewPage('abdomen', 1)"/>
+      <img class="person-hand-left" src="/static/images/hand.png" alt="左手" @click="goNewPage('hand', 3)"/>
+      <img class="person-hand-right" src="/static/images/hand.png" alt="右手" @click="goNewPage('hand', 3)"/>
+      <img class="person-pelvic" src="/static/images/pelvic.png" alt="盆腔" @click="goNewPage('pelvic', 2)"/>
+      <img class="person-leg-left" src="/static/images/leg.png" alt="左脚" @click="goNewPage('leg', 4)"/>
+      <img class="person-leg-right"src="/static/images/leg.png" alt="右脚" @click="goNewPage('leg', 4)"/>
     </div>
     <p class="tip">请选择修复部位</p>
     <div class="modal-wrapper" v-if="showModal">
@@ -46,42 +46,162 @@
         </picker>
       </div>
       <div class="button-footer">
-        <button class="button-sure" @click="hideModal">确定</button>
+        <button class="button-sure" @click="setRepaireInfo">确定</button>
       </div>
     </div>
+    <button v-if="!auth" type="success" class="button-auth" open-type="getUserInfo" @getuserinfo="bindGetUserInfo"></button>
   </div>
 </template>
 
 <script>
+import {login, getRepairinfo, postRepairinfo, getCourse, postUserinfo} from '../../services/imumServices'
+import {shareConfig} from '../../utils/commonConfig'
 
 export default {
   data () {
     return {
-      scrollTop: 0,
-      bannerList: [],
-      gameList: [],
-      recommendList: [],
-      windowHeight: '100%',
-      showContainer: 0,
-      channel: '',
-      showModal: false,
+      showModal: false, // 信息提交面板显示控制字段
       typeList: ['顺产', '剖腹产'],
-      days: [],
-      dayIndex: 70,
-      typeIndex: 0,
-      rateType: 1,
-      sessionId: ''
+      days: [], // 产后第几天选择列表（包含1-90天可选）
+      dayIndex: 0, // 用户选择的天数
+      typeIndex: 0, // 用户选择的生产方式
+      rateType: 1, // 完成周期的占比 1 0%-25%； 2 20% - 50%； 3 50% - 100%
+      sessionid: '',
+      dayNum: 0, // 用户修复天数
+      cycle: '42', // 修复总周期
+      auth: true // 用户是否授权
     }
   },
-  mounted () {
-    this.sessionId = wx.getStorageSync('sessionId')
-    this.showModal = wx.getStorageSync('sessionId')
-    if (this.sessionId) {
-
+  created () {
+    console.log(wx.getStorageSync('sessionid'))
+    if (!wx.getStorageSync('sessionid')) { // 未登录过的用户走登录流程
+      wx.login({ // 调用接口获取登录凭证（code)
+        success: (res) => {
+          if (res.code) {
+            this.userLogin(res.code)
+          }
+        }
+      })
+    } else {
+      this.initPageView()
     }
-    this.initDays()
   },
   methods: {
+    /**
+     * 小程序登录
+     * @param code 小程序提供的登录码
+     * @return {Promise<void>}
+     */
+    async userLogin (code) {
+      const data = await login({code})
+      if (data.code === 0 && data.data && data.data.sessionid) {
+        this.sessionid = data.data.sessionid
+        this.getWxUserInfo()
+      }
+    },
+    /**
+     * 用户授权获取用户信息，授权成功提交数据，拒绝授权显示授权按钮
+     */
+    getWxUserInfo () {
+      wx.getUserInfo({
+        success: res => {
+          this.postUserInfo(res)
+        },
+        fail: () => {
+          this.auth = false
+        }
+      })
+    },
+    /**
+     * 用户点击确认授权后提交信息到服务端，记录sessionid并更新页面
+     * @param res 微信端提供的用户数据
+     * @return {Promise<void>}
+     */
+    async postUserInfo (res) {
+      const data = await postUserinfo({
+        encryptedData: res.encryptedData,
+        iv: res.iv,
+        rawData: res.rawData,
+        signature: res.signature
+      })
+      if (data && data.code === 0) {
+        this.auth = true
+        wx.setStorageSync('sessionid', this.sessionid)
+        this.initPageView()
+      }
+    },
+    bindGetUserInfo (e) {
+      if (e.mp.detail.rawData) {
+        this.getWxUserInfo()
+      } else {
+        this.auth = false
+      }
+    },
+    /**
+     * 初始化页面显示
+     */
+    initPageView () {
+      this.sessionid = wx.getStorageSync('sessionid')
+      this.getCourseInfo() // 获取课程信息
+      const notFirstVisit = wx.getStorageSync('notFirstVisit') === 'true' // 用户是否初次访问
+      if (notFirstVisit) {
+        this.getRepairInfo() // 不是初次访问直接加载该用户的修复信息
+      } else { // 初次访问用户显示信息提交modal
+        this.initDays()
+        this.showModal = true
+      }
+    },
+    /**
+     * 获取基础修复课程信息
+     */
+    async getCourseInfo () {
+      const data = await getCourse({
+        sessionid: this.sessionid
+      })
+      if (data.code === 0) {
+        const courseInfo = data.data.course[0]
+        this.cycle = courseInfo.cycle
+        wx.setStorageSync('course', JSON.stringify({
+          id: courseInfo.id,
+          cycle: courseInfo.cycle,
+          name: courseInfo.name
+        }))
+      }
+    },
+    /**
+     * 获取登录用户的修复
+     * @return {Promise<void>}
+     */
+    async getRepairInfo () {
+      const data = await getRepairinfo({
+        sessionid: this.sessionid
+      })
+      if (data.code === 0) {
+        this.dayNum = data.data.ppday
+        wx.setStorageSync('ppday', this.dayNum)
+        this.setRateType(this.dayNum)
+      }
+    },
+    /**
+     * 提交用户个人的修复信息
+     **/
+    async setRepaireInfo () {
+      const ppmode = this.typeList[this.typeIndex]
+      const ppday = this.days[this.dayIndex]
+      const data = await postRepairinfo({
+        sessionid: this.sessionid,
+        ppmode,
+        ppday
+      })
+      if (data.code === 0) {
+        wx.setStorageSync('notFirstVisit', 'true')
+        this.showModal = false
+        this.getRepairInfo()
+      }
+    },
+    /**
+     * 初始化天数选择器
+     **/
     initDays () {
       const days = []
       for (let i = 1; i <= 90; i += 1) {
@@ -89,34 +209,41 @@ export default {
       }
       this.days = days
     },
-    goNewPage (pageName) {
-      const url = `../${pageName}/main`
+    /**
+     * 跳转主题修复页面
+     * @param pageName 主题对应的页面名称
+     * @param id 身体区域 0-胸部 1-腹部 2-骨盆3-手臂 4-腿部
+     **/
+    goNewPage (pageName, id) {
+      const url = `../${pageName}/main?themeId=${id}`
       wx.navigateTo({ url })
     },
-    scroll (e) {
-      this.scrollTop = e.target.scrollTop
-      console.log(this.scrollTop)
-    },
+    /**
+     * 记录用户选择的天数序号
+     **/
     pickerChange (e) {
       this.dayIndex = e.mp.detail.value
     },
+    /**
+     * 记录用户选择的生产类型序号
+     **/
     changeTypeIndex (index) {
       this.typeIndex = index
     },
-    hideModal () {
-      const day = this.days[this.dayIndex]
-      const rate = day / 90 * 100
+    /**
+     * 根据用户产后的天数对应相应的外圆类型
+     * @param day 新妈产后天数
+     */
+    setRateType (day) {
+      const cycle = this.cycle
+      const rate = day / cycle * 100
       if (rate > 0 && rate <= 25) this.rateType = 1
       else if (rate > 25 && rate <= 50) this.rateType = 2
       else this.rateType = 3
-      this.showModal = false
     }
   },
   onShareAppMessage () {
-    return {
-      title: `     @我 你的好友在这里大杀特杀！快来超过ta`,
-      path: 'pages/index/main'
-    }
+    return shareConfig
   }
 }
 </script>
@@ -275,17 +402,17 @@ export default {
       left: 0;
     }
     .circle-days {
-      width: 62px;
-      height: 62px;
-      line-height: 62px;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
       border-radius: 50%;
       border: 2px solid #fff;
       color: #fff;
       font-size: 19px;
       font-weight: bold;
       text-align: center;
-      margin-top: 5px;
-      margin-left: 5px;
+      margin-top: 6px;
+      margin-left: 6px;
       background: transparent;
     }
     .day-num {
@@ -364,5 +491,14 @@ export default {
         font-size: 15px;
       }
     }
+  }
+  .button-auth {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 1000;
   }
 </style>

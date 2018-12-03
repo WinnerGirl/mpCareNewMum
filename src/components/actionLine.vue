@@ -1,19 +1,21 @@
 <template>
-  <div class="action-line">
+  <div class="action-line" v-if="showActionLine">
     <div class="page-center">
       <img src="/static/images/line.png">
     </div>
     <div class="page-right">
-      <div class="title" v-text="action.title">
+      <div class="title">
+        <div class="title-cycle text-el-1">{{action.cycle}}太长了吧</div>
+        <div class="title-count">{{action.count}}个动作 {{action.times}}秒</div>
       </div>
       <ul class="action-list">
-        <li class="action" v-for="(item, index) in action.data" :key="index" @click="goDetail">
+        <li class="action" v-for="(item, index) in action.actions" :key="index" @click="goDetail(item.id)">
           <span v-text="item.name"></span>
           <div class="clearfix">
-            <img class="pull-left" src="https://imgsa.baidu.com/exp/w=480/sign=55050fb4af51f3dec3b2b86ca4eef0ec/241f95cad1c8a78601048d706709c93d70cf50a6.jpg">
+            <img class="pull-left" :src="item.imglink">
             <div class="detail pull-left">
-              <span v-text="item.times"></span>
-              <span v-text="item.prop"></span>
+              <span>{{item.times}}″</span>
+              <span v-text="item.equipment"></span>
             </div>
           </div>
         </li>
@@ -23,16 +25,37 @@
 </template>
 
 <script>
+  import { getTheme } from '../services/imumServices'
+
   export default {
-    props: {
-      action: {
-        type: Object,
-        default: () => {}
+    data () {
+      return {
+        showActionLine: false,
+        action: {}
       }
     },
+    props: {
+      id: {
+        type: Number,
+        default: 0
+      }
+    },
+    mounted () {
+      this.getActionByTheme()
+    },
     methods: {
-      goDetail () {
-        wx.navigateTo({ url: '../detail/main' })
+      goDetail (actionId) {
+        wx.navigateTo({ url: `../detail/main?actionId=${actionId}&themeId=${this.id}` })
+      },
+      async getActionByTheme () {
+        const data = await getTheme({
+          sessionid: wx.getStorageSync('sessionid'),
+          themeid: this.id
+        })
+        if (data.code === 0) {
+          this.showActionLine = true
+          this.action = data.data
+        }
       }
     }
   }
@@ -58,8 +81,17 @@
     margin-left: 15px;
     top: 0;
     .title {
-      font-size: 15px;
+      margin-top: -18px;
       color: #333;
+      .title-cycle {
+        font-size: 15px;
+        width: 152px;
+      }
+      .title-count {
+        white-space: nowrap;
+        font-size: 12px;
+      }
+
     }
     .action-list {
       height: 400px;

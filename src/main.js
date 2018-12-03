@@ -19,8 +19,7 @@ export default {
       'pages/pelvic/main',
       'pages/hand/main',
       'pages/leg/main',
-      'pages/detail/main',
-      'pages/video/main'],
+      'pages/detail/main'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#E9BCD6',
